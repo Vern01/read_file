@@ -1,18 +1,30 @@
 #include "fdf.h"
 
-	int		**read_file(char *s)
+void	free_array(char ***array)
 {
-	const int	fd;
-	int			i;
+	char	**temp;
+
+	temp = *array;
+	while (*temp)
+		free(*temp++);
+	free(*array);
+}
+
+int		**read_file(char *s)
+{
+	int			fd;
+	int			count;
 	int			**iarray;
 	char		*line;
-	char		*array;
+	char		**array;
 
 	fd = open(s, O_RDONLY);
+	count = 0;
 	while (get_next_line(fd, &line))
 	{
 		array = ft_strsplit(line, ' ');
-		iarray = add_to_array(array);
+		add_to_array(array, &iarray, count++);
+		free_array(&array);
 		free(line);
 	}
 	return (iarray);
